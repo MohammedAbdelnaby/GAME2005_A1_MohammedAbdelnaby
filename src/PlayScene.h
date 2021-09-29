@@ -23,12 +23,22 @@ public:
 	virtual void start() override;
 private:
 	// IMGUI Function
-	void GUI_Function() const;
+	void GUI_Function();
 	std::string m_guiTitle;
 	
 	glm::vec2 m_mousePosition;
 
 	Target* m_detonator;
+
+	float StartingX = 100.0f;
+	float StartingY = 500.0f;
+	float Angle = 0;
+	float gravity = 9.8f;
+	float speed = 95;
+	float time = 0;
+
+	float VelocityX;
+	float VelocityY;
 
 
 };

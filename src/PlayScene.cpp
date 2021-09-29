@@ -19,6 +19,9 @@ PlayScene::~PlayScene()
 void PlayScene::draw()
 {
 	drawDisplayList();
+	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 0, 0, 255);
+	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), StartingX, StartingY, StartingX + (cos((Angle * (3.14 / 180)))) * 100
+		, StartingY + (sin((Angle * (3.14 / 180)))) * 100);
 	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 255, 255, 255);
 }
 
@@ -64,7 +67,7 @@ void PlayScene::start()
 	m_guiTitle = "Play Scene";
 	
 	m_detonator = new Target();
-	m_detonator->getTransform()->position = glm::vec2(400.0f, 300.0f);
+	m_detonator->getTransform()->position = glm::vec2(StartingX, StartingY);
 	m_detonator->setParent(this);
 	addChild(m_detonator);
 
@@ -72,7 +75,7 @@ void PlayScene::start()
 	ImGuiWindowFrame::Instance().setGUIFunction(std::bind(&PlayScene::GUI_Function, this));
 }
 
-void PlayScene::GUI_Function() const
+void PlayScene::GUI_Function()
 {
 	// Always open with a NewFrame
 	ImGui::NewFrame();
@@ -82,6 +85,24 @@ void PlayScene::GUI_Function() const
 	
 	ImGui::Begin("Your Window Title Goes Here", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove);
 
+	static float X = StartingX;
+	if (ImGui::SliderFloat("X", &X, 100.0f, 400.f))
+	{
+		StartingX = X;
+		m_detonator->getTransform()->position.x = StartingX;
+	}
+	static float Y = StartingY;
+	if (ImGui::SliderFloat("Y", &Y, 500.0f, 100.f))
+	{
+		StartingY = Y;
+		m_detonator->getTransform()->position.y = StartingY;
+	}
+
+	ImGui::SliderFloat("Angle", &Angle, 0, -90, "%.3f");
+
+	ImGui::SliderFloat("Speed", &speed, 0.0f, 50.0f, "%.3f");
+
+	//ImGui::SliderFloat("Gravity", &AccelerationGravity, 0.0f, -50.0f, "%.3f");
 
 	ImGui::End();
 }
