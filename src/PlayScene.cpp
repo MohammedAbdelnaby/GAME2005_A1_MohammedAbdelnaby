@@ -7,6 +7,7 @@
 #include "imgui_sdl.h"
 #include "Renderer.h"
 #include "Util.h"
+#include <sstream>
 
 PlayScene::PlayScene()
 {
@@ -18,12 +19,15 @@ PlayScene::~PlayScene()
 
 void PlayScene::draw()
 {
-	drawDisplayList();
 	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 0, 0, 255);
+	TextureManager::Instance().draw("backround", 400,275, 0, 255, true);
 	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), m_startingX, m_startingY, m_startingX + ((m_speed / 90) * cos((m_angle * (3.14 / 180)))) * 100
 		, m_startingY + ((m_speed / 90) * sin((m_angle * (3.14 / 180)))) * 100);
 	TextureManager::Instance().draw("ground", 400, 580, 0, 255, true);
 	TextureManager::Instance().draw("wookiee", m_startingX - 20, m_startingY - 50, 0, 255, true);
+	drawDisplayList();
+
+
 	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 255, 255, 255);
 }
 
@@ -48,8 +52,11 @@ void PlayScene::update()
 		m_detonator->getTransform()->position.x += m_velocityX * DeltaTime;
 	}
 	m_distance = (m_detonator->getTransform()->position.x - m_startingX);
-	std::cout << m_distance << std::endl;
 
+	std::stringstream distancetravled;
+	distancetravled << "Distances: " << m_distance;
+	const std::string distanceString = distancetravled.str();
+	m_distanceUI->setText(distanceString);
 }
 
 void PlayScene::clean()
@@ -60,8 +67,6 @@ void PlayScene::clean()
 void PlayScene::handleEvents()
 {
 	EventManager::Instance().update();
-
-
 
 
 
@@ -87,14 +92,24 @@ void PlayScene::start()
 {
 	// Set GUI Title
 	m_guiTitle = "Play Scene";
-	
+	TextureManager::Instance().load("../Assets/textures/ground.png", "ground");
+	TextureManager::Instance().load("../Assets/textures/wookiee.png", "wookiee");
+	TextureManager::Instance().load("../Assets/textures/backround.png", "backround");
 	m_detonator = new Target();
 	m_detonator->getTransform()->position = glm::vec2(m_startingX, m_startingY);
 	m_detonator->setParent(this);
 	addChild(m_detonator);
+	const SDL_Color blue = { 255, 0,0, 255 };
+	m_pInstructionsLabel = new Label("\" ` \" for ImGui and all the controls", "Consolas", 40, blue, glm::vec2(400.0f, 120.0f));
+	m_pInstructionsLabel->setParent(this);
+	addChild(m_pInstructionsLabel);
 
-	TextureManager::Instance().load("../Assets/textures/ground.png", "ground");
-	TextureManager::Instance().load("../Assets/textures/wookiee.png", "wookiee");
+	m_distanceUI = new Label("", "Consolas", 30, blue, glm::vec2(400.0f, 550.0f));
+	m_distanceUI->setParent(this);
+	addChild(m_distanceUI);
+
+
+
 	ImGuiWindowFrame::Instance().setGUIFunction(std::bind(&PlayScene::GUI_Function, this));
 }
 

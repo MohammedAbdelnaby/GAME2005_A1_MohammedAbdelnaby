@@ -25,7 +25,8 @@ private:
 	// IMGUI Function
 	void GUI_Function();
 	std::string m_guiTitle;
-	
+	Label* m_pInstructionsLabel{};
+	Label* m_distanceUI{};
 	glm::vec2 m_mousePosition;
 
 	Target* m_detonator;
