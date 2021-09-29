@@ -54,7 +54,7 @@ void PlayScene::update()
 	m_distance = (m_detonator->getTransform()->position.x - m_startingX);
 
 	std::stringstream distancetravled;
-	distancetravled << "Distances: " << m_distance;
+	distancetravled << "Distances:" << m_distance << " Angle:" << m_angle << " speed:" << m_speed << " gravity:" << m_gravity;
 	const std::string distanceString = distancetravled.str();
 	m_distanceUI->setText(distanceString);
 }
@@ -104,7 +104,7 @@ void PlayScene::start()
 	m_pInstructionsLabel->setParent(this);
 	addChild(m_pInstructionsLabel);
 
-	m_distanceUI = new Label("", "Consolas", 30, blue, glm::vec2(400.0f, 550.0f));
+	m_distanceUI = new Label("", "Consolas", 25, blue, glm::vec2(400.0f, 550.0f));
 	m_distanceUI->setParent(this);
 	addChild(m_distanceUI);
 
@@ -121,7 +121,7 @@ void PlayScene::GUI_Function()
 	// See examples by uncommenting the following - also look at imgui_demo.cpp in the IMGUI filter
 	//ImGui::ShowDemoWindow();
 	
-	ImGui::Begin("Your Window Title Goes Here", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove);
+	ImGui::Begin("Controls", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove);
 
 	static float X = m_startingX;
 	if (ImGui::SliderFloat("X", &X, 100.0f, 400.f, "%.2f"))

@@ -39,8 +39,6 @@ private:
 	float m_distance = 0;
 	float m_velocityX = m_speed* (cos(m_angle* (M_PI / 180)));
 	float m_velocityY = m_speed* (sin(m_angle* (M_PI / 180)));
-
-
 };
 
 #endif /* defined (__PLAY_SCENE__) */
