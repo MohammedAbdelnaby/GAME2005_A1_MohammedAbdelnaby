@@ -22,6 +22,8 @@ void PlayScene::draw()
 	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 0, 0, 255);
 	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), m_startingX, m_startingY, m_startingX + ((m_speed / 90) * cos((m_angle * (3.14 / 180)))) * 100
 		, m_startingY + ((m_speed / 90) * sin((m_angle * (3.14 / 180)))) * 100);
+	TextureManager::Instance().draw("ground", 400, 580, 0, 255, true);
+	TextureManager::Instance().draw("wookiee", m_startingX - 20, m_startingY - 50, 0, 255, true);
 	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 255, 255, 255);
 }
 
@@ -91,7 +93,8 @@ void PlayScene::start()
 	m_detonator->setParent(this);
 	addChild(m_detonator);
 
-
+	TextureManager::Instance().load("../Assets/textures/ground.png", "ground");
+	TextureManager::Instance().load("../Assets/textures/wookiee.png", "wookiee");
 	ImGuiWindowFrame::Instance().setGUIFunction(std::bind(&PlayScene::GUI_Function, this));
 }
 
