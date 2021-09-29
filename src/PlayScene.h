@@ -29,16 +29,15 @@ private:
 	glm::vec2 m_mousePosition;
 
 	Target* m_detonator;
-
+	bool m_launch = false;
 	float m_startingX = 100.0f;
 	float m_startingY = 500.0f;
-	float m_angle = -60;
+	float m_angle = -45;
 	float m_gravity = -9.8f;
 	float m_speed = 95;
-	float m_time = 0;
 	float m_distance = 0;
-	float m_velocityX;
-	float m_velocityY;
+	float m_velocityX = m_speed* (cos(m_angle* (M_PI / 180)));
+	float m_velocityY = m_speed* (sin(m_angle* (M_PI / 180)));
 
 
 };

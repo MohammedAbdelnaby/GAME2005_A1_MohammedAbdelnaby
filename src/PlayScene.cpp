@@ -28,23 +28,25 @@ void PlayScene::draw()
 void PlayScene::update()
 {
 	float DeltaTime = Game::Instance().getDeltaTime();
-	m_time += DeltaTime;
 	updateDisplayList();
 
-	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_SPACE))
+	if(m_launch)
 	{
-		m_velocityX = m_speed * (cos(m_angle * (M_PI / 180)));
-		m_velocityY = m_speed * (sin(m_angle * (M_PI / 180)));
-		m_velocityY -= m_gravity * m_time;
+		if (m_detonator->getTransform()->position.y > 500)
+		{
+			m_velocityX = 0;
+			m_velocityY = 0;
+		}
+		else
+		{
+			m_velocityY -= m_gravity * DeltaTime;
+		}
+
 		m_detonator->getTransform()->position.y += m_velocityY * DeltaTime;
 		m_detonator->getTransform()->position.x += m_velocityX * DeltaTime;
 	}
-	else
-	{
-		m_time = 0;
-		m_detonator->getTransform()->position = glm::vec2(m_startingX, m_startingY);
-	}
-	std::cout << (m_detonator->getTransform()->position.x - m_startingX) << std::endl;
+	m_distance = (m_detonator->getTransform()->position.x - m_startingX);
+	std::cout << m_distance << std::endl;
 
 }
 
@@ -104,23 +106,42 @@ void PlayScene::GUI_Function()
 	ImGui::Begin("Your Window Title Goes Here", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove);
 
 	static float X = m_startingX;
-	if (ImGui::SliderFloat("X", &X, 100.0f, 400.f))
+	if (ImGui::SliderFloat("X", &X, 100.0f, 400.f, "%.2f"))
 	{
 		m_startingX = X;
 		m_detonator->getTransform()->position.x = m_startingX;
 	}
+
 	static float Y = m_startingY;
-	if (ImGui::SliderFloat("Y", &Y, 500.0f, 100.f))
+	if (ImGui::SliderFloat("Y", &Y, 500.0f, 100.f, "%.2f"))
 	{
 		m_startingY = Y;
 		m_detonator->getTransform()->position.y = m_startingY;
 	}
 
-	ImGui::SliderFloat("Angle", &m_angle, 0, -90, "%.3f");
+	ImGui::SliderFloat("Angle", &m_angle, 0, -90, "%.2f");
 
-	ImGui::SliderFloat("Speed", &m_speed, 0.0f, 100.0f, "%.3f");
+	ImGui::SliderFloat("Speed", &m_speed, 0.0f, 100.0f, "%.2f");
 
-	//ImGui::SliderFloat("Gravity", &AccelerationGravity, 0.0f, -50.0f, "%.3f");
+	ImGui::SliderFloat("Gravity", &m_gravity, 0.0f, -20.0f, "%.1f");
+
+	ImGui::Separator();
+
+	if (ImGui::Button("LAUNCH"))
+	{
+		m_launch = true;
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("reset"))
+	{
+		m_launch = false;
+		m_distance = 0;
+		m_velocityX = m_speed * (cos(m_angle * (M_PI / 180)));
+		m_velocityY = m_speed * (sin(m_angle * (M_PI / 180)));
+		m_detonator->getTransform()->position = glm::vec2(m_startingX, m_startingY);
+	}
 
 	ImGui::End();
 }
