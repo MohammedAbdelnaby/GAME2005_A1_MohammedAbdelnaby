@@ -30,15 +30,15 @@ private:
 
 	Target* m_detonator;
 
-	float StartingX = 100.0f;
-	float StartingY = 500.0f;
-	float Angle = 0;
-	float gravity = 9.8f;
-	float speed = 95;
-	float time = 0;
-
-	float VelocityX;
-	float VelocityY;
+	float m_startingX = 100.0f;
+	float m_startingY = 500.0f;
+	float m_angle = -60;
+	float m_gravity = -9.8f;
+	float m_speed = 95;
+	float m_time = 0;
+	float m_distance = 0;
+	float m_velocityX;
+	float m_velocityY;
 
 
 };

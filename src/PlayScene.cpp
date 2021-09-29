@@ -20,14 +20,32 @@ void PlayScene::draw()
 {
 	drawDisplayList();
 	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 0, 0, 255);
-	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), StartingX, StartingY, StartingX + (cos((Angle * (3.14 / 180)))) * 100
-		, StartingY + (sin((Angle * (3.14 / 180)))) * 100);
+	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), m_startingX, m_startingY, m_startingX + ((m_speed / 90) * cos((m_angle * (3.14 / 180)))) * 100
+		, m_startingY + ((m_speed / 90) * sin((m_angle * (3.14 / 180)))) * 100);
 	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 255, 255, 255);
 }
 
 void PlayScene::update()
 {
+	float DeltaTime = Game::Instance().getDeltaTime();
+	m_time += DeltaTime;
 	updateDisplayList();
+
+	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_SPACE))
+	{
+		m_velocityX = m_speed * (cos(m_angle * (M_PI / 180)));
+		m_velocityY = m_speed * (sin(m_angle * (M_PI / 180)));
+		m_velocityY -= m_gravity * m_time;
+		m_detonator->getTransform()->position.y += m_velocityY * DeltaTime;
+		m_detonator->getTransform()->position.x += m_velocityX * DeltaTime;
+	}
+	else
+	{
+		m_time = 0;
+		m_detonator->getTransform()->position = glm::vec2(m_startingX, m_startingY);
+	}
+	std::cout << (m_detonator->getTransform()->position.x - m_startingX) << std::endl;
+
 }
 
 void PlayScene::clean()
@@ -67,7 +85,7 @@ void PlayScene::start()
 	m_guiTitle = "Play Scene";
 	
 	m_detonator = new Target();
-	m_detonator->getTransform()->position = glm::vec2(StartingX, StartingY);
+	m_detonator->getTransform()->position = glm::vec2(m_startingX, m_startingY);
 	m_detonator->setParent(this);
 	addChild(m_detonator);
 
@@ -85,22 +103,22 @@ void PlayScene::GUI_Function()
 	
 	ImGui::Begin("Your Window Title Goes Here", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove);
 
-	static float X = StartingX;
+	static float X = m_startingX;
 	if (ImGui::SliderFloat("X", &X, 100.0f, 400.f))
 	{
-		StartingX = X;
-		m_detonator->getTransform()->position.x = StartingX;
+		m_startingX = X;
+		m_detonator->getTransform()->position.x = m_startingX;
 	}
-	static float Y = StartingY;
+	static float Y = m_startingY;
 	if (ImGui::SliderFloat("Y", &Y, 500.0f, 100.f))
 	{
-		StartingY = Y;
-		m_detonator->getTransform()->position.y = StartingY;
+		m_startingY = Y;
+		m_detonator->getTransform()->position.y = m_startingY;
 	}
 
-	ImGui::SliderFloat("Angle", &Angle, 0, -90, "%.3f");
+	ImGui::SliderFloat("Angle", &m_angle, 0, -90, "%.3f");
 
-	ImGui::SliderFloat("Speed", &speed, 0.0f, 50.0f, "%.3f");
+	ImGui::SliderFloat("Speed", &m_speed, 0.0f, 100.0f, "%.3f");
 
 	//ImGui::SliderFloat("Gravity", &AccelerationGravity, 0.0f, -50.0f, "%.3f");
 
