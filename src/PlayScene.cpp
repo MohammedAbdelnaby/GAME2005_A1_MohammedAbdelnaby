@@ -20,7 +20,7 @@ PlayScene::~PlayScene()
 void PlayScene::draw()
 {
 	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 0, 0, 255);
-	TextureManager::Instance().draw("backround", 400,275, 0, 255, true);
+	TextureManager::Instance().draw("backround", 400,240, 0, 255, true);
 	SDL_RenderDrawLineF(Renderer::Instance().getRenderer(), m_startingX, m_startingY, m_startingX + ((m_speed / 90) * cos((m_angle * (3.14 / 180)))) * 100
 		, m_startingY + ((m_speed / 90) * sin((m_angle * (3.14 / 180)))) * 100);
 	TextureManager::Instance().draw("ground", 400, 580, 0, 255, true);
@@ -68,10 +68,6 @@ void PlayScene::handleEvents()
 {
 	EventManager::Instance().update();
 
-
-
-	
-
 	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_ESCAPE))
 	{
 		TheGame::Instance().quit();
@@ -107,8 +103,6 @@ void PlayScene::start()
 	m_distanceUI = new Label("", "Consolas", 25, blue, glm::vec2(400.0f, 550.0f));
 	m_distanceUI->setParent(this);
 	addChild(m_distanceUI);
-
-
 
 	ImGuiWindowFrame::Instance().setGUIFunction(std::bind(&PlayScene::GUI_Function, this));
 }
